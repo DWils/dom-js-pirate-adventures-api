@@ -1,24 +1,20 @@
-const express = require('express');
 const { Pool } = require('pg');
-const app = express();
-
-require('dotenv').config(); // Charger les variables d'environnement
+require('dotenv').config();
 
 const pool = new Pool({
   connectionString: process.env.SUPABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Nécessaire pour Supabase
+  ssl: { rejectUnauthorized: false }, // Nécessaire pour certaines bases Supabase
 });
 
-app.use(express.json());
-
-app.get('/api/data', async (req, res) => {
+async function testConnection() {
   try {
-    const result = await pool.query('SELECT * FROM votre_table');
-    res.status(200).json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur de connexion à la base de données' });
+    const result = await pool.query('SELECT NOW()');
+    console.log('Connexion réussie !', result.rows[0]);
+  } catch (error) {
+    console.error('Erreur de connexion :', error);
+  } finally {
+    pool.end();
   }
-});
+}
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Serveur en cours d'exécution sur le port ${port}`));
+testConnection();
