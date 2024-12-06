@@ -19,7 +19,7 @@ const client = new Client({
 async function findLevels(req, res) {
     try {
         const query = `
-        select level.id as level_id, name, item.item_id as item_id, class as item_class, image as item_image from level
+        select level.id as level_id, name, item.id as item_id, item.item_id as item_unique_id, class as item_class, image as item_image from level
         inner join item_level on level.id = item_level.level_id
         inner join item on item.id = item_level.item_id
         inner join item_model on item_model.id = item.item_model_id;
@@ -28,7 +28,7 @@ async function findLevels(req, res) {
 
         // Organiser les données par niveau
         const levels = result.rows.reduce((acc, row) => {
-            const { level_id, level_name, item_id, item_class, item_image } = row;
+            const { level_id, level_name, item_id, item_unique_id, item_class, item_image } = row;
 
             let level = acc.find(l => l.id === level_id);
             if (!level) {
@@ -39,7 +39,7 @@ async function findLevels(req, res) {
             if (item_id) {
                 level.items.push({
                     id: item_id,
-                    item_id: item_id,
+                    item_id: item_unique_id,
                     class: item_class,
                     image: item_image,
                 });
