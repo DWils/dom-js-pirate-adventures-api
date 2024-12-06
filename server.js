@@ -3,6 +3,11 @@ require('dotenv').config();
 
 const { Client } = require('pg');
 const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Configurer CORS
+app.use(cors()); // Autorise toutes les origines
 
 // Connexion à Supabase
 const client = new Client({
@@ -14,7 +19,7 @@ const client = new Client({
 async function findLevels(req, res) {
     try {
         const query = `
-        select level.id as level_id, name, item.item_id as item_id, class, image from level
+        select level.id as level_id, name, item.item_id as item_id, class as item_class, image as item_image from level
         inner join item_level on level.id = item_level.level_id
         inner join item on item.id = item_level.item_id
         inner join item_model on item_model.id = item.item_model_id;
@@ -107,7 +112,6 @@ client.connect()
     .catch((err) => console.error('Erreur lors de la connexion à Supabase:', err));
 
 // Configuration du serveur Express
-const app = express();
 const port = 3000;
 
 // Route pour récupérer tous les niveaux avec leurs items associés
