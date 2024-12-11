@@ -1,12 +1,16 @@
-// db.js
-const { Pool } = require('pg');
+const mongoose = require('mongoose');
 
-// Créez une instance du pool de connexions PostgreSQL avec vos informations de connexion
-const pool = new Pool({
-    connectionString: process.env.SUPABASE_URL,
-    ssl: {
-        rejectUnauthorized: false, // Cela dépend de votre configuration SSL
-    },
-});
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('Connecté à MongoDB');
+    } catch (err) {
+        console.error('Erreur de connexion à MongoDB :', err.message);
+        process.exit(1);
+    }
+};
 
-module.exports = pool; // Exporter le pool pour pouvoir l'utiliser dans d'autres fichiers
+module.exports = connectDB;

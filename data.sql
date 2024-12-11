@@ -29,7 +29,7 @@ CREATE TABLE level (
 -- Table Item Level
 CREATE TABLE item_level (
     id SERIAL PRIMARY KEY,
-    level_id INT NOT NULL REFERENCES level(id) ON DELETE CASCADE,
+    level_id INT NOT NULL REFERENCES level(level_id) ON DELETE CASCADE,
     item_id INT NOT NULL REFERENCES item(id) ON DELETE CASCADE
 );
 

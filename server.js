@@ -1,19 +1,27 @@
-// app.js
-require('dotenv').config();
+require('dotenv').config(); // Charger les variables d'environnement
 const express = require('express');
 const cors = require('cors');
-const levelRoutes = require('./routes/level'); // Importer les routes de niveau
+const mongoose = require('mongoose');
+const levelRoutes = require('./routes/level'); // Import des routes des niveaux
 
 const app = express();
 
-// Configurer CORS
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Utiliser les routes de niveau
-app.use('/api', levelRoutes); // Toutes les routes liées à /levels sont gérées par levelRoutes
+// Connexion à MongoDB
+const mongoURI = process.env.MONGO_URI;
+mongoose
+    .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connecté à MongoDB'))
+    .catch((err) => console.error('Erreur de connexion à MongoDB :', err));
 
-// Démarrer le serveur
-const port = 8080;
-app.listen(port, () => {
-    console.log(`Le serveur API écoute sur le port ${port}`);
+// Routes
+app.use('/api', levelRoutes);
+
+// Configuration du serveur
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log(`Serveur en écoute sur le port ${PORT}`);
 });
